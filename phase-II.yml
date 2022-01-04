@@ -93,7 +93,5 @@
       apt: 
           name: [ "kubectl" ]
           state: present
-          cache_valid_time: 3600
-          update_cache: yes
 
 
