@@ -97,7 +97,7 @@ python3 -m pip install --quiet -r $KUBESPRAY_FOLDER/requirements.txt && echo -e 
 
 
 echo -n "[Launch vagrant up]..."
-cd $KUBESPRAY_FOLDER && vagrant up && echo -e "$ECHO_SUCCESS"
+cd "$KUBESPRAY_FOLDER" && vagrant up && echo -e "$ECHO_SUCCESS"
 
 
 echo -n "[Deactivate python3 venv]..."
