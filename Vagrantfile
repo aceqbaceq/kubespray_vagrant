@@ -15,7 +15,7 @@ host_vars = {}
 # пути к плейбукам
   require 'fileutils'
   PLAYBOOK_CLUSTER_PATH    = File.join(File.dirname(__FILE__), "cluster.yml")
-  PLAYBOOK_PHASE-II_PATH   = File.join(File.dirname(__FILE__), "phase-II.yml")
+  PLAYBOOK_PHASE_PATH   = File.join(File.dirname(__FILE__), "phase-II.yml")
 
 
 
@@ -80,7 +80,7 @@ end
 
     if i == NUM_INSTANCES
        node.vm.provision "phase-II", type: "ansible", run: "once" do |ansible|
-          ansible.playbook = "#{PLAYBOOK_PHASE-II_PATH}"
+          ansible.playbook = "#{PLAYBOOK_PHASE_PATH}"
           ansible.become = true
           ansible.limit = "all,localhost"
           ansible.host_key_checking = false
