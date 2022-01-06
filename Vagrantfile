@@ -61,7 +61,7 @@ end
     # Only execute the Ansible provisioner once, when all the machines are up and ready.
     if i == NUM_INSTANCES
        node.vm.provision "cluster", type: "ansible", run: "once" do |ansible|
-          ansible.playbook = "PLAYBOOK_CLUSTER_PATH"
+          ansible.playbook = "#{PLAYBOOK_CLUSTER_PATH}"
           ansible.become = true
           ansible.limit = "all,localhost"
           ansible.host_key_checking = false
@@ -80,7 +80,7 @@ end
 
     if i == NUM_INSTANCES
        node.vm.provision "phase-II", type: "ansible", run: "once" do |ansible|
-          ansible.playbook = "PLAYBOOK_PHASE-II_PATH"
+          ansible.playbook = "#{PLAYBOOK_PHASE-II_PATH}"
           ansible.become = true
           ansible.limit = "all,localhost"
           ansible.host_key_checking = false
