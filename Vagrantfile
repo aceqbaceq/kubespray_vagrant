@@ -5,7 +5,7 @@ Vagrant.configure("2") do |config|
 
 # Variables
 INSTANCE_NAME_PREFIX = "k8sv4"
-NUM_INSTANCES = 3
+NUM_INSTANCES = 5
 KUBE_MASTER_INSTANCES = 2
 INVENTORY_FOLDER = "inventory/sample"
 ETCD_INSTANCES ||= NUM_INSTANCES
