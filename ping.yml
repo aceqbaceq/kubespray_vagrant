@@ -1,0 +1,10 @@
+- name: playbook - ping.yml
+  hosts: all
+  gather_facts: false
+  become: false
+  vars:
+    - notebook_user: "{{ lookup('env','USER') }}"
+  tasks:
+    - name: ping
+      ping:
+

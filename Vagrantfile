@@ -14,8 +14,7 @@ host_vars = {}
 
 # пути к плейбукам
   require 'fileutils'
-  PLAYBOOK_CLUSTER_PATH    = File.join(File.dirname(__FILE__), "cluster.yml")
-  PLAYBOOK_PHASE_PATH   = File.join(File.dirname(__FILE__), "phase-II.yml")
+  PLAYBOOK_PHASE_PATH   = File.join(File.dirname(__FILE__), "ping.yml")
 
 
 
@@ -60,26 +59,7 @@ end
 
     # Only execute the Ansible provisioner once, when all the machines are up and ready.
     if i == NUM_INSTANCES
-       node.vm.provision "cluster", type: "ansible", run: "once" do |ansible|
-          ansible.playbook = "#{PLAYBOOK_CLUSTER_PATH}"
-          ansible.become = true
-          ansible.limit = "all,localhost"
-          ansible.host_key_checking = false
-          ansible.host_vars = host_vars
-          ansible.raw_arguments = ["--forks=#{NUM_INSTANCES}", "--flush-cache", "-e ansible_ssh_user=vagrant"]
-          ansible.groups = {
-            "etcd" => ["#{INSTANCE_NAME_PREFIX}-[1:#{ETCD_INSTANCES}]"],
-            "kube_control_plane" => ["#{INSTANCE_NAME_PREFIX}-[1:#{KUBE_MASTER_INSTANCES}]"],
-            "kube_node" => ["#{INSTANCE_NAME_PREFIX}-[1:#{NUM_INSTANCES}]"],
-            "k8s_cluster:children" => ["kube_control_plane", "kube_node"],
-          }
-        end
-     end
-
-
-
-    if i == NUM_INSTANCES
-       node.vm.provision "phase-II", type: "ansible", run: "once" do |ansible|
+       node.vm.provision "ping", type: "ansible" do |ansible|
           ansible.playbook = "#{PLAYBOOK_PHASE_PATH}"
           ansible.become = true
           ansible.limit = "all,localhost"

@@ -1,15 +1,14 @@
 #!/bin/bash
 
+set -e
 
 KUBESPRAY_FOLDER="$HOME/git/kubespray6"
-ANSIBLE_FOLDER="$KUBESPRAY_FOLDER/python3/ansible"
 GIT_URL="https://github.com/kubernetes-sigs/kubespray.git"
 ORANGE=$(tput setaf 3)
 GREEN=$(tput setaf 2)
 BLUE=$(tput setaf 4)
 RESET=$(tput sgr0)
 ECHO_KUBESPRAY_FOLDER="${ORANGE}$KUBESPRAY_FOLDER${RESET}"
-ECHO_ANSIBLE_FOLDER="${ORANGE}$ANSIBLE_FOLDER${RESET}"
 ECHO_NO="${BLUE}[NO]\n ${RESET} ---> "
 ECHO_SUCCESS="${GREEN}[SUCCESS]\n${RESET}"
 
@@ -55,53 +54,47 @@ fi
 echo  -n "[Download Vagrantfile]..."
 wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/Vagrantfile" -P $KUBESPRAY_FOLDER && echo -e "$ECHO_SUCCESS"
 
+echo  -n "[Download ping.yml]..."
+wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/ping.yml" -P $KUBESPRAY_FOLDER && echo -e "$ECHO_SUCCESS"
+
 
 echo  -n "[Download phase-II.yml]..."
 wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/phase-II.yml" -P $KUBESPRAY_FOLDER && echo -e "$ECHO_SUCCESS"
 
 
-
-echo -n "[Install apt python3-venv]..."
-sudo apt-get -qq -y install python3-venv && echo -e "$ECHO_SUCCESS"
-
-
-
-echo -n "[Check if folder $ECHO_ANSIBLE_FOLDER exists]..."
-if [ ! -d "$ANSIBLE_FOLDER" ]; then
-  echo -en "$ECHO_NO"
-  echo -n "Creating folder $ECHO_ANSIBLE_FOLDER..."
-  mkdir -p $ANSIBLE_FOLDER && echo -e "$ECHO_SUCCESS"
-else 
-  echo -n "[Check if folder $ECHO_ANSIBLE_FOLDER is empty]..."
-  if [ "$(ls -A1 $ANSIBLE_FOLDER | wc -l)" -ne 0 ]; then
-      echo -en "$ECHO_NO"
-      echo -n "[Delete all files in folder $ECHO_ANSIBLE_FOLDER]..."
-      rm -rf $ANSIBLE_FOLDER && echo -e "$ECHO_SUCCESS"
-  else
-      echo -e "$ECHO_YES"
-  fi
-
-fi
+echo  -n "[Download python poetry config files]..."
+wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/poetry/pyproject.toml" -P $KUBESPRAY_FOLDER && echo -e "$ECHO_SUCCESS"
+wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/poetry/poetry.lock" -P $KUBESPRAY_FOLDER && echo -e "$ECHO_SUCCESS"
 
 
-echo -n "[Install python3 venv in folder $ECHO_ANSIBLE_FOLDER]..."
-/usr/bin/python3 -m venv --system-site-packages $ANSIBLE_FOLDER/env && echo -e "$ECHO_SUCCESS"
+echo  -n "[Install python poetry package manager]..."
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -  && echo -e "$ECHO_SUCCESS"
 
 
-echo -n "[Activate python3 venv]..."
-source $ANSIBLE_FOLDER/env/bin/activate && echo -e "$ECHO_SUCCESS"
+echo  -n "[Change current directory to $KUBESPRAY_FOLDER]..."
+cd  $KUBESPRAY_FOLDER  && echo -e "$ECHO_SUCCESS"
 
+echo  -n "[Install python packages via poetry]..."
+poetry install  && echo -e "$ECHO_SUCCESS"
 
-echo -n "[Install local Ansible in folder $ECHO_ANSIBLE_FOLDER]..."
-python3 -m pip install --quiet -r $KUBESPRAY_FOLDER/requirements.txt && echo -e "$ECHO_SUCCESS"
+echo  -n "[Show ansible version]..."
+poetry run ansible --version  && echo -e "$ECHO_SUCCESS"
 
 
 echo -n "[Launch vagrant up]..."
-cd "$KUBESPRAY_FOLDER" && vagrant up && echo -e "$ECHO_SUCCESS"
+poetry run  vagrant up  && echo -e "$ECHO_SUCCESS"
+
+echo  -n "[provision cluster.yml]..."
+poetry run ansible-playbook -i ./.vagrant/provisioners/ansible/inventory ./cluster.yml  && echo -e "$ECHO_SUCCESS"
+
+echo  -n "[provision phase-II.yml]..."
+poetry run ansible-playbook -i ./.vagrant/provisioners/ansible/inventory ./phase-II.yml  && echo -e "$ECHO_SUCCESS"
 
 
-echo -n "[Deactivate python3 venv]..."
-deactivate && echo -e "$ECHO_SUCCESS"
+
+
+
+
 
 
 
