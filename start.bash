@@ -80,15 +80,17 @@ poetry install  && echo -e "$ECHO_SUCCESS"
 echo  -n "[Show ansible version]..."
 poetry run ansible --version  && echo -e "$ECHO_SUCCESS"
 
+echo  -n "[disable cows in ansible]..."
+export ANSIBLE_NOCOWS=1
 
 echo -n "[Launch vagrant up]..."
 poetry run  vagrant up  && echo -e "$ECHO_SUCCESS"
 
 echo  -n "[provision cluster.yml]..."
-poetry run ansible-playbook -i ./.vagrant/provisioners/ansible/inventory ./cluster.yml  && echo -e "$ECHO_SUCCESS"
+poetry run ansible-playbook -b -i ./.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory ./cluster.yml  && echo -e "$ECHO_SUCCESS"
 
 echo  -n "[provision phase-II.yml]..."
-poetry run ansible-playbook -i ./.vagrant/provisioners/ansible/inventory ./phase-II.yml  && echo -e "$ECHO_SUCCESS"
+poetry run ansible-playbook -b -i ./.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory ./phase-II.yml  && echo -e "$ECHO_SUCCESS"
 
 
 
