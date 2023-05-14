@@ -68,7 +68,7 @@ wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/maste
 
 
 echo  -n "[Install python poetry package manager]..."
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -  && echo -e "$ECHO_SUCCESS"
+curl -sSL https://install.python-poetry.org | python3 - --version 1.1.15 && echo -e "$ECHO_SUCCESS"
 
 
 echo  -n "[Change current directory to $KUBESPRAY_FOLDER]..."
