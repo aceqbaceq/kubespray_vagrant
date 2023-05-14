@@ -2,8 +2,9 @@
 
 set -e
 
-KUBESPRAY_FOLDER="$HOME/git/kubespray6"
+KUBESPRAY_FOLDER="./kubespray"
 GIT_URL="https://github.com/kubernetes-sigs/kubespray.git"
+GIT_COMMIT="4ffe138dfaf400637acaf334d9e88528971fa372"
 ORANGE=$(tput setaf 3)
 GREEN=$(tput setaf 2)
 BLUE=$(tput setaf 4)
@@ -39,6 +40,13 @@ git clone --quiet $GIT_URL  $KUBESPRAY_FOLDER
 echo -e "$ECHO_SUCCESS"
 
 
+echo  -n  "[Checkout kubespray repo to a particular commit]..."
+cd $KUBESPRAY_FOLDER && git checkout $GIT_COMMIT
+echo -e "$ECHO_SUCCESS"
+
+
+
+
 echo -n "[Check if Vagrantfile does not exists]..."
 if [ ! -f "$KUBESPRAY_FOLDER/Vagrantfile" ]; then
   echo -en "$ECHO_SUCCESS"
@@ -68,29 +76,29 @@ wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/maste
 
 
 echo  -n "[Install python poetry package manager]..."
-curl -sSL https://install.python-poetry.org | python3 - --version 1.1.15 && echo -e "$ECHO_SUCCESS"
+curl -sSL https://install.python-poetry.org | python3 - --version 1.3.2 && echo -e "$ECHO_SUCCESS"
 
 
 echo  -n "[Change current directory to $KUBESPRAY_FOLDER]..."
 cd  $KUBESPRAY_FOLDER  && echo -e "$ECHO_SUCCESS"
 
 echo  -n "[Install python packages via poetry]..."
-poetry install  && echo -e "$ECHO_SUCCESS"
+~/.local/bin/poetry install  && echo -e "$ECHO_SUCCESS"
 
 echo  -n "[Show ansible version]..."
-poetry run ansible --version  && echo -e "$ECHO_SUCCESS"
+~/.local/bin/poetry run ansible --version  && echo -e "$ECHO_SUCCESS"
 
 echo  -n "[disable cows in ansible]..."
 export ANSIBLE_NOCOWS=1
 
 echo -n "[Launch vagrant up]..."
-poetry run  vagrant up  && echo -e "$ECHO_SUCCESS"
+~/.local/bin/poetry run  vagrant up  && echo -e "$ECHO_SUCCESS"
 
 echo  -n "[provision cluster.yml]..."
-poetry run ansible-playbook -b -i ./.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory ./cluster.yml  && echo -e "$ECHO_SUCCESS"
+~/.local/bin/poetry run ansible-playbook -b -i ./.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory ./cluster.yml  && echo -e "$ECHO_SUCCESS"
 
 echo  -n "[provision phase-II.yml]..."
-poetry run ansible-playbook -b -i ./.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory ./phase-II.yml  && echo -e "$ECHO_SUCCESS"
+~/.local/bin/poetry run ansible-playbook -b -i ./.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory ./phase-II.yml  && echo -e "$ECHO_SUCCESS"
 
 
 
