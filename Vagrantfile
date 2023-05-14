@@ -37,7 +37,7 @@ end
   config.vm.define "#{INSTANCE_NAME_PREFIX}-#{i}" do |node|
     node.vm.box_download_insecure = true
     node.vm.box = "hashicorp/bionic64"
-    node.vm.network "private_network", ip: "100.0.0.#{i+2}"
+    node.vm.network "private_network", ip: "192.168.56.#{i+2}"
     node.vm.hostname = "#{INSTANCE_NAME_PREFIX}-#{i}"
        node.vm.provider "virtualbox" do |v|
          v.name = "#{INSTANCE_NAME_PREFIX}-#{i}"
@@ -51,8 +51,8 @@ end
    vm_name="#{INSTANCE_NAME_PREFIX}-#{i}"
 
    host_vars[vm_name] = {
-       "ip" => "100.0.0.#{i+2}",
-       "access_ip" => "100.0.0.#{i+2}"
+       "ip" => "192.168.56.#{i+2}",
+       "access_ip" => "192.168.56.#{i+2}"
    }
 
 
