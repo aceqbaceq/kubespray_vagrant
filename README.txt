@@ -1,11 +1,15 @@
-# kubespray_vagrant
-deploy k8 via kubespray on vagrant
+# kubespray
 
-documentation - https://github.com/aceqbaceq/docs/blob/master/kubespray.txt
+эта ветка предназначена если хотим инсталировать к8 не на вагрант
+а на какието машины из прописанные в inventory
+
+тогда корректируем inventory и запускаем start.bash
+
+$  ./start.bash
 
 
-изначально использовался pip но поскольку они там чтот в итоге поломали то пришлось перейти на poetry.
+# как оно работает:
+ставится poetry.
+внутри него ставится ансибль.
+и через этот ансибль с помощью inventory ставится к8 на основе плейбука от kubespray
 
-для установки кубернетеса через kubesparay запускаем start.bash
-
-openebs.yml его я ставил на готовый куб уже потом отдельно.

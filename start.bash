@@ -3,6 +3,7 @@
 set -e
 
 KUBESPRAY_FOLDER="./kubespray"
+POETRY_VERSION="1.1.15"
 GIT_URL="https://github.com/kubernetes-sigs/kubespray.git"
 GIT_COMMIT="4ffe138dfaf400637acaf334d9e88528971fa372"
 ORANGE=$(tput setaf 3)
@@ -40,47 +41,31 @@ git clone --quiet $GIT_URL  $KUBESPRAY_FOLDER
 echo -e "$ECHO_SUCCESS"
 
 
+echo  -n "[Change current directory to $KUBESPRAY_FOLDER]..."
+cd  $KUBESPRAY_FOLDER  && echo -e "$ECHO_SUCCESS"
+
+
 echo  -n  "[Checkout kubespray repo to a particular commit]..."
-cd $KUBESPRAY_FOLDER && git checkout $GIT_COMMIT
+git checkout $GIT_COMMIT 2>/dev/null
 echo -e "$ECHO_SUCCESS"
 
 
 
 
-echo -n "[Check if Vagrantfile does not exists]..."
-if [ ! -f "$KUBESPRAY_FOLDER/Vagrantfile" ]; then
-  echo -en "$ECHO_SUCCESS"
-else 
-  echo -en "$ECHO_NO"
-  echo -n "[Delete file $ECHO_KUBESPRAY_FOLDER/Vagrantfile]..."
-  rm -f $KUBESPRAY_FOLDER/Vagrantfile && echo -e "$ECHO_SUCCESS"
-
-fi
-
-
-
-echo  -n "[Download Vagrantfile]..."
-wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/Vagrantfile" -P $KUBESPRAY_FOLDER && echo -e "$ECHO_SUCCESS"
-
 echo  -n "[Download ping.yml]..."
-wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/ping.yml" -P $KUBESPRAY_FOLDER && echo -e "$ECHO_SUCCESS"
+wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/ping.yml"  && echo -e "$ECHO_SUCCESS"
 
 
-echo  -n "[Download phase-II.yml]..."
-wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/phase-II.yml" -P $KUBESPRAY_FOLDER && echo -e "$ECHO_SUCCESS"
 
-
-echo  -n "[Download python poetry config files]..."
-wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/poetry/pyproject.toml" -P $KUBESPRAY_FOLDER && echo -e "$ECHO_SUCCESS"
-wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/poetry/poetry.lock" -P $KUBESPRAY_FOLDER && echo -e "$ECHO_SUCCESS"
+echo  -n "[Download python poetry config files]...pyproject.toml..."
+wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/poetry/pyproject.toml" && echo -e "$ECHO_SUCCESS"
+echo  -n "[Download python poetry config files]...poetry.lock..."
+wget -q -nv "https://raw.githubusercontent.com/aceqbaceq/kubespray_vagrant/master/poetry/poetry.lock" && echo -e "$ECHO_SUCCESS"
 
 
 echo  -n "[Install python poetry package manager]..."
-curl -sSL https://install.python-poetry.org | python3 - --version 1.3.2 && echo -e "$ECHO_SUCCESS"
+curl -sSL https://install.python-poetry.org | python3 - --version $POETRY_VERSION  1>/dev/null  && echo -e "$ECHO_SUCCESS"
 
-
-echo  -n "[Change current directory to $KUBESPRAY_FOLDER]..."
-cd  $KUBESPRAY_FOLDER  && echo -e "$ECHO_SUCCESS"
 
 echo  -n "[Install python packages via poetry]..."
 ~/.local/bin/poetry install  && echo -e "$ECHO_SUCCESS"
@@ -91,21 +76,8 @@ echo  -n "[Show ansible version]..."
 echo  -n "[disable cows in ansible]..."
 export ANSIBLE_NOCOWS=1
 
-echo -n "[Launch vagrant up]..."
-~/.local/bin/poetry run  vagrant up  && echo -e "$ECHO_SUCCESS"
-
 echo  -n "[provision cluster.yml]..."
-~/.local/bin/poetry run ansible-playbook -b -i ./.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory ./cluster.yml  && echo -e "$ECHO_SUCCESS"
-
-echo  -n "[provision phase-II.yml]..."
-~/.local/bin/poetry run ansible-playbook -b -i ./.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory ./phase-II.yml  && echo -e "$ECHO_SUCCESS"
-
-
-
-
-
-
-
+~/.local/bin/poetry run ansible-playbook -b -i ../inventory ./cluster.yml  && echo -e "$ECHO_SUCCESS"
 
 
 
