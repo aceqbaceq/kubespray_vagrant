@@ -5,7 +5,7 @@ description = ""
 authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.8"
+python = ">=3.9"
 ansible = "5.5.0"
 ansible-core = "2.14.0"
 cryptography = "2.8"
